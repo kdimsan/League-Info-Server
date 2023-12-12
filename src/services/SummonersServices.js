@@ -28,7 +28,6 @@ class SummonersServices {
 
     const SUMMONER_DETAILS_API = `https://${accountRegion}.${baseUrl}/${summonerDetailsUrl}/${SUMMONER_PUUID}?api_key=${KEY}`;
 
-    const API_RANKED_CALL = `https://${accountRegion}.${baseUrl}/${rankedUrl}/${SUMMONER_PUUID}?api_key=${KEY}`;
     const API_CHAMPION_MAESTRY = `https://${accountRegion}.${baseUrl}/${championMaestryUrl}/${SUMMONER_PUUID}?api_key=${KEY}`;
     const ALL_CHAMPIONS_API =
       "https://ddragon.leagueoflegends.com/cdn/13.23.1/data/en_US/champion.json";
@@ -39,6 +38,9 @@ class SummonersServices {
         return response.data;
       })
       .catch((err) => err);
+
+    const SUMMONER_ID = SUMMONER_DATA_RES.id;
+    const API_RANKED_CALL = `https://${accountRegion}.${baseUrl}/${rankedUrl}/${SUMMONER_ID}?api_key=${KEY}`;
 
     const SUMMONER_RANKED_RES = await axios
       .get(API_RANKED_CALL)
