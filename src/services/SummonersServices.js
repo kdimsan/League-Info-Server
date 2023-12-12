@@ -2,23 +2,43 @@ const axios = require("axios");
 
 class SummonersServices {
   async get(request, response) {
-    const playerName = "AliasArgonaut";
-    const KEY = process.env.API_KEY;
-    const API_SUMMONER_CALL = `https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-name/${playerName}?api_key=${KEY}`;
+    const playerName = "Alias";
+    const tagLine = "br23";
+    const accountRegion = "br1";
 
-    const SUMMONER_DATA_RES = await axios
+    const KEY = process.env.API_KEY;
+    const baseUrl = process.env.BASE_URL;
+    const rankedUrl = process.env.RANKED_URL;
+    const championMaestryUrl = process.env.CHAMPION_MAESTRY_URL;
+    const baseSummonerUrl = process.env.BASE_SUMMONER_URL;
+    const summonerDetailsUrl = process.env.SUMMONER_DETAILS_URL;
+
+    //recive region by input parameters
+
+    const API_SUMMONER_CALL = `https://europe.${baseUrl}/${baseSummonerUrl}/${playerName}/${tagLine}?api_key=${KEY}`;
+
+    const SUMMONER_BY_TAG_RES = await axios
       .get(API_SUMMONER_CALL)
       .then((response) => {
         return response.data;
       })
       .catch((err) => err);
 
-    const SUMMONER_ID = await SUMMONER_DATA_RES.id;
+    const SUMMONER_PUUID = await SUMMONER_BY_TAG_RES.puuid;
 
-    const API_RANKED_CALL = `https://br1.api.riotgames.com/lol/league/v4/entries/by-summoner/${SUMMONER_ID}?api_key=${KEY}`;
-    const API_CHAMPION_MAESTRY = `https://br1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/${SUMMONER_ID}?api_key=${KEY}`;
+    const SUMMONER_DETAILS_API = `https://${accountRegion}.${baseUrl}/${summonerDetailsUrl}/${SUMMONER_PUUID}?api_key=${KEY}`;
+
+    const API_RANKED_CALL = `https://${accountRegion}.${baseUrl}/${rankedUrl}/${SUMMONER_PUUID}?api_key=${KEY}`;
+    const API_CHAMPION_MAESTRY = `https://${accountRegion}.${baseUrl}/${championMaestryUrl}/${SUMMONER_PUUID}?api_key=${KEY}`;
     const ALL_CHAMPIONS_API =
       "https://ddragon.leagueoflegends.com/cdn/13.23.1/data/en_US/champion.json";
+
+    const SUMMONER_DATA_RES = await axios
+      .get(SUMMONER_DETAILS_API)
+      .then((response) => {
+        return response.data;
+      })
+      .catch((err) => err);
 
     const SUMMONER_RANKED_RES = await axios
       .get(API_RANKED_CALL)
